@@ -1,4 +1,4 @@
-// UI elements
+// Grab UI elements
 const pwd = document.getElementById('pwd');
 const meter = document.getElementById('meter');
 const scoreLabel = document.getElementById('score-label');
@@ -14,7 +14,7 @@ function labelForScore(score) {
   return ['Very weak', 'Weak', 'Fair', 'Strong', 'Very strong'][score];
 }
 
-// Custom hygiene rules (extend as needed)
+// Custom hygiene rules
 function customChecks(pwd) {
   const issues = [];
   if (pwd.length < 12) issues.push('Use at least 12 characters.');
@@ -58,22 +58,18 @@ pwd.addEventListener('input', () => {
   const score = z.score; // 0..4
   meter.style.width = `${(score + 1) * 20}%`; // 20% increments
   meter.style.background = colorForScore(score);
-  scoreLabel.textContent = `Strength: ${labelForScore(score)} (entropy estimate: ${Math.round(z.entropy)} bits)`;
+  scoreLabel.textContent = `Strength: ${labelForScore(score)} (entropy: ${Math.round(z.entropy)} bits)`;
 
   const messages = [];
-  // zxcvbn suggestions
   if (z.feedback.warning) messages.push(z.feedback.warning);
   if (z.feedback.suggestions?.length) messages.push(...z.feedback.suggestions);
-
-  // custom rules
   messages.push(...customChecks(val));
 
   renderList(feedbackList, Array.from(new Set(messages)));
 });
 
-// Privacy-safe breach check using HIBP k-anonymity (SHA-1 prefix)
+// Privacy-safe breach check using HIBP k-anonymity
 async function checkHIBP(password) {
-  // Hash password client-side (SHA-1)
   const enc = new TextEncoder();
   const data = enc.encode(password);
   const hashBuf = await crypto.subtle.digest('SHA-1', data);
@@ -107,14 +103,15 @@ hibpBtn.addEventListener('click', async () => {
   try {
     const result = await checkHIBP(val);
     if (result.pwned) {
-      hibpResult.textContent = `This password appears in breaches (${result.count} times). Choose a different one.`;
+      hibpResult.textContent = `⚠️ This password appears in breaches (${result.count} times). Choose a different one.`;
       hibpResult.style.color = '#f97316';
     } else {
-      hibpResult.textContent = 'No breach match found for this password hash prefix.';
+      hibpResult.textContent = '✅ No breach match found for this password.';
       hibpResult.style.color = '#22c55e';
     }
   } catch (e) {
-    hibpResult.textContent = 'Breach check failed. Try again later.';
+    console.error(e);
+    hibpResult.textContent = '❌ Breach check failed. Try again later.';
     hibpResult.style.color = '#ef4444';
   }
 });
