@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Password Hygiene Checker</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+  <!-- zxcvbn for strength scoring (free, open-source) -->
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Password Hygiene Checker</h1>
+
+    <label for="pwd"><strong>Password:</strong></label>
+    <input type="password" id="pwd" autocomplete="new-password" placeholder="Enter password">
+
+    <div id="meter-wrap">
+      <div id="meter"></div>
+    </div>
+
+    <div id="score-label"></div>
+    <ul id="feedback"></ul>
+
+    <div class="tips">
+      <h2>Tips</h2>
+      <ul>
+        <li><strong>Length:</strong> Aim for 12–16+ characters.</li>
+        <li><strong>Diversity:</strong> Mix upper/lowercase, numbers, symbols.</li>
+        <li><strong>Avoid:</strong> Dictionary words, names, dates, sequences.</li>
+        <li><strong>Use:</strong> Passphrases with unrelated words.</li>
+      </ul>
+    </div>
+
+    <button id="hibp-btn">Check if compromised (privacy-safe)</button>
+    <div id="hibp-result"></div>
+  </div>
+</body>
+</html>
